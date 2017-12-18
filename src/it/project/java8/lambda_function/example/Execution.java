@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.function.BiFunction;
 
 import it.project.java8.lambda_function.example.util.CheckStudent;
 import it.project.java8.lambda_function.example.util.Classroom;
@@ -68,7 +69,7 @@ public class Execution {
 		c.printStudentGeneralConsumer((Student s) -> s.getGender()==Student.Sex.MALE
 				&& s.getAge()>=lowAge && s.getAge()<highAge, 
 				s->s.printStudent());
-		
+
 		/**3) We can use one of the standard functional 
 		 * interface defined by the JDK called Function<T,R> (generic interface) to map user to their email
 		 * and print email
@@ -77,16 +78,16 @@ public class Execution {
 				&& s.getAge()>=lowAge && s.getAge()<highAge, 
 				s->s.getEmail(), 
 				email -> System.out.println(email));
-		
+
 		/**8) We can use one of the standard functional 
 		 * interface defined by the JDK called Iterable<X> (generic interface) to iterate over a list and generics
 		 */
 		c.printStudentGeneralFunctionGenerics(
-				c.getListStudents(),
-				s -> s.getGender()==Student.Sex.MALE && s.getAge()>=lowAge && s.getAge()<highAge, 
-				s->s.getEmail(), 
-				email -> System.out.println(email));
-		
+				c.getListStudents(),//iterable
+				s -> s.getGender()==Student.Sex.MALE && s.getAge()>=lowAge && s.getAge()<highAge, //predicate
+				s->s.getEmail(), //function
+				email -> System.out.println(email));//consumer
+
 		/**9)Aggregate operation
 		 */
 		c.getListStudents()
@@ -94,7 +95,25 @@ public class Execution {
 		.filter(s->s.getGender()==Student.Sex.MALE && s.getAge()>=lowAge && s.getAge()<35)
 		.map(s->s.getEmail())
 		.forEach(email->System.out.println(email));
+		
+		//my examples
+		c.getListStudents()
+		.stream()
+		.filter(s-> s.getName().equals("Irina"))
+		.map(s->s.getAge())
+		.forEach(System.out::println);
 
+		BiFunction<Integer, Integer , Integer> f = (a,b) -> a+b;
+		System.out.println(f.apply(2, 3));
+		
+		double average = c.getListStudents()
+				.stream()
+				.filter(s-> s.getGender().equals(Sex.FEMALE))
+				.mapToInt(Student::getAge)
+				.average()
+				.getAsDouble();
+		System.out.println("Avg of the age of female students: "+average);
+				
 		
 	}
 }
