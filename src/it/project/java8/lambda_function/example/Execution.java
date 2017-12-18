@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 import it.project.java8.lambda_function.example.util.CheckStudent;
 import it.project.java8.lambda_function.example.util.Classroom;
@@ -15,9 +18,9 @@ public class Execution {
 
 	public static void main(String[] args) {
 
-		Student s1 = new Student("Mario", "Rossi", LocalDate.of(1988, Month.JUNE, 20),Sex.MALE,"mariorossi@gmail.com");
-		Student s2 = new Student("Irina", "Verdi", LocalDate.of(1989, Month.JANUARY, 2),Sex.FEMALE,"irinave@gmail.com");
-		Student s3 = new Student("Stefania", "Bianchi", LocalDate.of(1988, Month.MAY, 12),Sex.FEMALE,"sbianchi@gmail.com");
+		Student s1 = new Student("Mario", "Rossi", LocalDate.of(1988, Month.JUNE, 20),Sex.MALE,"mariorossi@gmail.com",2);
+		Student s2 = new Student("Irina", "Verdi", LocalDate.of(1989, Month.JANUARY, 2),Sex.FEMALE,"irinave@gmail.com",3);
+		Student s3 = new Student("Stefania", "Bianchi", LocalDate.of(1988, Month.MAY, 12),Sex.FEMALE,"sbianchi@gmail.com",10);
 
 
 		int lowAge = 18, highAge = 25;
@@ -96,16 +99,19 @@ public class Execution {
 		.map(s->s.getEmail())
 		.forEach(email->System.out.println(email));
 		
-		//my examples
 		c.getListStudents()
 		.stream()
 		.filter(s-> s.getName().equals("Irina"))
 		.map(s->s.getAge())
-		.forEach(System.out::println);
+		.forEachOrdered(System.out::println);// or forEach(System.out::println);
 
+		//bifunction that computes the sum of two integer
 		BiFunction<Integer, Integer , Integer> f = (a,b) -> a+b;
 		System.out.println(f.apply(2, 3));
 		
+			
+		/**10)Reduction
+		 */
 		double average = c.getListStudents()
 				.stream()
 				.filter(s-> s.getGender().equals(Sex.FEMALE))
@@ -113,7 +119,26 @@ public class Execution {
 				.average()
 				.getAsDouble();
 		System.out.println("Avg of the age of female students: "+average);
-				
+		
+		//sum total number of exams reduce 
+		//<identity (initial value and default result), accumulator (partial result of the reduction)>
+		Integer totNumExams = c.getListStudents()
+				.stream()
+				.mapToInt(s-> s.getNumberExams())
+				.reduce(0, (a,b)->a + b);//or use .sum();
+		System.out.println("Total number of exams done by all students: "+totNumExams);
+		
+		List<String> femaleStud = c.getListStudents()
+				.stream()
+				.filter(s-> s.getGender().equals(Sex.FEMALE))
+				.map(s->s.getName())
+				.collect(Collectors.toList());
+		System.out.println("Name list of all female students: "+femaleStud.toString());
+
+		Map<Sex,List<String>> byGender = c.getListStudents()
+				.stream()
+				.collect(Collectors.groupingBy(s->s.getGender(),Collectors.mapping(Student::getName,Collectors.toList())));
+		System.out.println("Map of studend grouped by gender "+byGender.toString());
 		
 	}
 }

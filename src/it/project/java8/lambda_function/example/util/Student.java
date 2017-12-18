@@ -13,12 +13,13 @@ public class Student {
 	private Sex gender;
 	private String email;
 	private int age;
+	private int numberExams;
 	
 	
 	public Student() {
 		
 	}
-	public Student(String name, String surname, LocalDate birthday, Sex gender, String email) {
+	public Student(String name, String surname, LocalDate birthday, Sex gender, String email, int numberExams) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -27,6 +28,7 @@ public class Student {
 		this.email = email;
 		Period p = Period.between(this.getBirthday(), LocalDate.now());
 		this.age = p.getYears();
+		this.numberExams = numberExams;
 	}
 	
 	public String getName() {
@@ -67,9 +69,15 @@ public class Student {
 	@Override
 	public String toString() {
 		return "Student [name=" + name + ", surname=" + surname + ", birthday=" + birthday + ", gender=" + gender
-				+ ", email=" + email + ", age=" + age + "]";
+				+ ", email=" + email + ", age=" + age + ", numberExams=" + numberExams +"]";
 	}
 	public void printStudent() {
 		System.out.println(this.toString());
+	}
+	public int getNumberExams() {
+		return numberExams;
+	}
+	public void setNumberExams(int numberExams) {
+		this.numberExams = numberExams;
 	}
 }
